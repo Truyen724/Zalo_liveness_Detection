@@ -4,10 +4,10 @@ from re import X
 import threading
 import cv2
 import os
-from facenet_pytorch import InceptionResnetV1
+
 # import tensorflow as tf
 import time 
-import torch
+
 
 import cv2
 import numpy as np
