@@ -45,16 +45,17 @@ def PlayCamera(id):
         ret, frame = video_capture.read()
         # img = frame[0:128,0:128]
         # print(model.predict(np.array([img])))
-        # img = mask_detect(frame)
         img = mask_detect(frame)
+        # img = mask_detect(frame)
         print(time.time() - x)
         cv2.imshow('{}'.format(id), img)        
         
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     video_capture.release()
+    cv2.destroyAllWindows()
 def run():
-    cameraIDs = [0]
+    cameraIDs = ["../train/videos/1.mp4"]
     threads = []
     for id in cameraIDs:
         threads += [threading.Thread(target=PlayCamera, args=(id,))]
