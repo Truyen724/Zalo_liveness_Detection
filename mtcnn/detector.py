@@ -39,6 +39,7 @@ class MtcnnDetector:
             # LOAD MODELS
             # self.onet.eval()
             self.pnet.eval()
+            self.rnet.eval()
             # BUILD AN IMAGE PYRAMID
             width, height = image.size
             min_length = min(height, width)
@@ -104,33 +105,33 @@ class MtcnnDetector:
             bounding_boxes = convert_to_square(bounding_boxes)
             bounding_boxes[:, 0:4] = np.round(bounding_boxes[:, 0:4])
 
-            # STAGE 3
+            # # STAGE 3
 
-            img_boxes = get_image_boxes(bounding_boxes, image, size=48)
-            if len(img_boxes) == 0:
-                return [], []
-            img_boxes = Variable(torch.FloatTensor(img_boxes).to(self.device))
-            output = self.onet(img_boxes)
-            landmarks = output[0].data.cpu().numpy()  # shape [n_boxes, 10]
-            offsets = output[1].data.cpu().numpy()  # shape [n_boxes, 4]
-            probs = output[2].data.cpu().numpy()  # shape [n_boxes, 2]
+            # img_boxes = get_image_boxes(bounding_boxes, image, size=48)
+            # if len(img_boxes) == 0:
+            #     return [], []
+            # img_boxes = Variable(torch.FloatTensor(img_boxes).to(self.device))
+            # output = self.onet(img_boxes)
+            # landmarks = output[0].data.cpu().numpy()  # shape [n_boxes, 10]
+            # offsets = output[1].data.cpu().numpy()  # shape [n_boxes, 4]
+            # probs = output[2].data.cpu().numpy()  # shape [n_boxes, 2]
 
-            keep = np.where(probs[:, 1] > thresholds[2])[0]
-            bounding_boxes = bounding_boxes[keep]
-            bounding_boxes[:, 4] = probs[keep, 1].reshape((-1,))
-            offsets = offsets[keep]
-            landmarks = landmarks[keep]
+            # keep = np.where(probs[:, 1] > thresholds[2])[0]
+            # bounding_boxes = bounding_boxes[keep]
+            # bounding_boxes[:, 4] = probs[keep, 1].reshape((-1,))
+            # offsets = offsets[keep]
+            # landmarks = landmarks[keep]
 
-            # compute landmark points
-            width = bounding_boxes[:, 2] - bounding_boxes[:, 0] + 1.0
-            height = bounding_boxes[:, 3] - bounding_boxes[:, 1] + 1.0
-            xmin, ymin = bounding_boxes[:, 0], bounding_boxes[:, 1]
-            landmarks[:, 0:5] = np.expand_dims(xmin, 1) + np.expand_dims(width, 1) * landmarks[:, 0:5]
-            landmarks[:, 5:10] = np.expand_dims(ymin, 1) + np.expand_dims(height, 1) * landmarks[:, 5:10]
+            # # compute landmark points
+            # width = bounding_boxes[:, 2] - bounding_boxes[:, 0] + 1.0
+            # height = bounding_boxes[:, 3] - bounding_boxes[:, 1] + 1.0
+            # xmin, ymin = bounding_boxes[:, 0], bounding_boxes[:, 1]
+            # landmarks[:, 0:5] = np.expand_dims(xmin, 1) + np.expand_dims(width, 1) * landmarks[:, 0:5]
+            # landmarks[:, 5:10] = np.expand_dims(ymin, 1) + np.expand_dims(height, 1) * landmarks[:, 5:10]
 
-            bounding_boxes = calibrate_box(bounding_boxes, offsets)
-            keep = nms(bounding_boxes, nms_thresholds[2], mode='min')
-            bounding_boxes = bounding_boxes[keep]
-            landmarks = landmarks[keep]
-
+            # bounding_boxes = calibrate_box(bounding_boxes, offsets)
+            # keep = nms(bounding_boxes, nms_thresholds[2], mode='min')
+            # bounding_boxes = bounding_boxes[keep]
+            # landmarks = landmarks[keep]
+            landmarks = []
             return bounding_boxes, landmarks
