@@ -18,7 +18,7 @@ class MtcnnDetector:
         self.rnet = RNet().to(self.device)
         self.onet = ONet().to(self.device)
 
-    def detect_faces(self, image, min_face_size=40.0,
+    def detect_faces(self, image, min_face_size=100.0,
                      thresholds=[0.6, 0.7, 0.7],
                      nms_thresholds=[0.7, 0.7, 0.7]):
         """
@@ -37,7 +37,7 @@ class MtcnnDetector:
 
         with torch.no_grad():
             # LOAD MODELS
-            # self.onet.eval()
+            self.onet.eval()
             self.pnet.eval()
             self.rnet.eval()
             # BUILD AN IMAGE PYRAMID
