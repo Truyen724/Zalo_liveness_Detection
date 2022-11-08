@@ -37,7 +37,8 @@ class MtcnnDetector:
 
         with torch.no_grad():
             # LOAD MODELS
-            self.onet.eval()
+            # self.onet.eval()
+            self.rnet.eval()
             # BUILD AN IMAGE PYRAMID
             width, height = image.size
             min_length = min(height, width)
