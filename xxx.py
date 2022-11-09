@@ -1,5 +1,5 @@
 import cv2
-id = "../train/videos/7.mp4"
+id = "../train/videos/1059.mp4"
 video_capture = cv2.VideoCapture(id)
 width  = int(video_capture.get(3))
 height = int(video_capture.get(4))
@@ -7,9 +7,12 @@ if height > width:
     scale = height / width
 else:
     scale = width / height
+if scale == 1:
+    scale = 2
 while height>1080 and width>1080: 
     height = int(height/scale)
     width = int(width/scale)
+    print(height,width)
 while True:
     ret, frame = video_capture.read()
     frame = cv2.resize(frame,(width,height))
