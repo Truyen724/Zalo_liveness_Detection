@@ -66,8 +66,9 @@ class MtcnnDetector:
 
             # it will be returned
             bounding_boxes = []
-
-            # run P-Net on different scales
+            landmarks = []
+            
+                # run P-Net on different scales
             for s in scales:
                 boxes = run_first_stage(image, self.pnet, scale=s, threshold=thresholds[0])
                 bounding_boxes.append(boxes)
@@ -133,5 +134,5 @@ class MtcnnDetector:
             keep = nms(bounding_boxes, nms_thresholds[2], mode='min')
             bounding_boxes = bounding_boxes[keep]
             landmarks = landmarks[keep]
-            # landmarks = []
+            
             return bounding_boxes, landmarks

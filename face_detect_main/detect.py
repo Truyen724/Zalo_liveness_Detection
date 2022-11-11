@@ -40,21 +40,37 @@ def mask_detect(image):
 
 def PlayCamera(id):    
     video_capture = cv2.VideoCapture(id)
+    face = None
+    width  = int(video_capture.get(3))
+    height = int(video_capture.get(4))
+    if height > width:
+        scale = height / width
+    else:
+        scale = width / height
+    if width == height:
+        scale = 2
+    while height>1000 or width>1000: 
+        height = int(height/scale)
+        width = int(width/scale)
     while True:
         x = time.time()
         ret, frame = video_capture.read()
+        
         # img = frame[0:128,0:128]
         # print(model.predict(np.array([img])))
         # img = mask_detect(frame)
-        img = mask_detect(frame)
-        print(time.time() - x)
-        cv2.imshow('{}'.format(id), img)        
-        
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        if ret ==True:
+            frame = cv2.resize(frame,(width,height))
+            img = mask_detect(frame)
+            print(time.time() - x)
+            cv2.imshow('{}'.format(id), img)        
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
     video_capture.release()
+
 def run():
-    cameraIDs = [0]
+    idw = "../../public/videos/1305.mp4"
+    cameraIDs = [idw]
     threads = []
     for id in cameraIDs:
         threads += [threading.Thread(target=PlayCamera, args=(id,))]
